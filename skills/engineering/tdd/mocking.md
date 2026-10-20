@@ -21,16 +21,26 @@ At system boundaries, design interfaces that are easy to mock:
 
 Pass external dependencies in rather than creating them internally:
 
-```typescript
+```java
 // Easy to mock
-function processPayment(order, paymentClient) {
-  return paymentClient.charge(order.total);
+class PaymentProcessor {
+    private final PaymentClient paymentClient;
+
+    PaymentProcessor(PaymentClient paymentClient) {
+        this.paymentClient = paymentClient;
+    }
+
+    PaymentResult processPayment(Order order) {
+        return paymentClient.charge(order.total());
+    }
 }
 
-// Hard to mock
-function processPayment(order) {
-  const client = new StripeClient(process.env.STRIPE_KEY);
-  return client.charge(order.total);
+// Hard to mock (alternative implementation)
+class PaymentProcessor {
+    PaymentResult processPayment(Order order) {
+        PaymentClient client = new StripeClient(System.getenv("STRIPE_KEY"));
+        return client.charge(order.total());
+    }
 }
 ```
 
@@ -38,18 +48,18 @@ function processPayment(order) {
 
 Create specific functions for each external operation instead of one generic function with conditional logic:
 
-```typescript
-// GOOD: Each function is independently mockable
-const api = {
-  getUser: (id) => fetch(`/users/${id}`),
-  getOrders: (userId) => fetch(`/users/${userId}/orders`),
-  createOrder: (data) => fetch('/orders', { method: 'POST', body: data }),
-};
+```java
+// GOOD: Each operation is independently mockable
+interface UserApi {
+    User getUser(String id);
+    List<Order> getOrders(String userId);
+    Order createOrder(CreateOrderRequest request);
+}
 
 // BAD: Mocking requires conditional logic inside the mock
-const api = {
-  fetch: (endpoint, options) => fetch(endpoint, options),
-};
+interface Api {
+    HttpResponse<String> fetch(String endpoint, RequestOptions options);
+}
 ```
 
 The SDK approach means:
