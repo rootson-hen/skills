@@ -10,6 +10,10 @@
 
 # Skills For Real Engineers
 
+> Personal fork of [mattpocock/skills](https://github.com/mattpocock/skills).
+> Customizations live on `personal`; see [FORK.md](./FORK.md) for the history and upstream-update workflow.
+> The installation instructions below are upstream documentation and refer to Matt’s repository.
+
 [![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
 
 My agent skills that I use every day to do real engineering - not vibe coding.
