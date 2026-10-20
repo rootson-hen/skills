@@ -82,7 +82,14 @@ untouched. Agent-specific installation remains a separate decision.
 
 ## Initial customization audit
 
-The initial audit compares installed skills from `mattpocock/skills` with the
-per-skill Git trees recorded in `~/.agents/.skill-lock.json`, including supporting
-files. Differences from a newer upstream release alone are not customizations.
-The audit's verified result is recorded in the initial customization commit.
+The initial audit compared 28 installed skills from `mattpocock/skills` with the
+per-skill Git trees recorded in `~/.agents/.skill-lock.json`: 81 files, including
+53 supporting files. Only `grilling/SKILL.md` was customized. Its final paragraph
+now requires an agreed summary and an immediate stop, without modifying project
+files; the user invokes a downstream skill to continue. No files were added or
+removed, and no supporting files were customized.
+
+Differences from a newer upstream release alone are not customizations. In
+particular, the installed `resolving-merge-conflicts` folder matches its recorded
+historical tree but is absent at v1.3.1. It is not copied into this release-based
+fork as a personal customization.
