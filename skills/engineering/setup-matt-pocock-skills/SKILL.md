@@ -11,6 +11,7 @@ Scaffold the per-repo configuration that the engineering skills assume:
 - **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels**: the strings used for the five canonical triage roles
 - **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
+- **Commit messages** (optional): repository-specific rules for the `commit` skill
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
@@ -24,9 +25,10 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
-- `docs/agents/`: does this skill's prior output already exist?
+- `docs/agents/`: does this skill's prior output already exist? Read any existing `commit-messages.md` so its policy is preserved.
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
+- Is the `commit` skill installed? This decides whether to offer Section D.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
 
 ### 2. Present findings and ask
@@ -60,12 +62,17 @@ The defaults are the five canonical roles, each label string equal to its name: 
 
 Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSSARY.md` files) only when exploration found monorepo signals. Then confirm which layout they want.
 
+**Section D: Commit messages.** Skip this section if the `commit` skill isn't installed. Keep an existing `docs/agents/commit-messages.md` unless the user requests changes.
+
+If the file is absent, ask whether the repo needs a specific commit-message format. Recommend leaving it absent when a concise Conventional Commit title and an optional useful body are sufficient. Otherwise, draft the file from the user's requirements. Record issue references, worklogs, or transitions only when explicitly required; do not invent them.
+
 ### 3. Confirm and edit
 
 Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- Any proposed `docs/agents/commit-messages.md`, only if the user chose repository-specific rules
 
 Let them edit before writing.
 
@@ -110,6 +117,8 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [domain.md](./domain.md): domain doc consumer rules + layout
 
 For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
+
+Write `docs/agents/commit-messages.md` only after the user confirms its draft. Do not add a commit-policy pointer to `AGENTS.md` or `CLAUDE.md`; the `commit` skill reads the file directly.
 
 ### 5. Done
 

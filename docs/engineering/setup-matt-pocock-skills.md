@@ -1,10 +1,10 @@
 ## What it does
 
-`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/`.
+`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/`. When [commit](https://aihero.dev/skills-commit) is installed, it also offers optional setup of repository-specific commit-message requirements.
 
 Those files are the only thing that varies between repos. The skills themselves are identical everywhere; they read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why no skill file ever needs editing to point it somewhere else. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with zero changes to the skills.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, your existing `CLAUDE.md`, your existing `GLOSSARY.md`, proposes what it found, and waits for you to confirm before writing anything.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, your existing `CLAUDE.md`, your existing `GLOSSARY.md`, and any existing `docs/agents/commit-messages.md`, proposes what it found, and waits for you to confirm before writing anything.
 
 ## When to reach for it
 
@@ -21,13 +21,14 @@ It writes into the repo you run it in:
 | `issue-tracker.md` | `docs/agents/` |
 | `domain.md` | `docs/agents/` |
 | `triage-labels.md` | `docs/agents/`, only when the `triage` skill is installed |
+| `commit-messages.md` | `docs/agents/`, only when `commit` is installed and you confirm a repository-specific policy |
 | An `## Agent skills` block | whichever of `CLAUDE.md` / `AGENTS.md` already exists |
 
 All of it is committed markdown. There is no user-level or global mode: the config lives in the repo, so every repo gets its own copy.
 
 ## The three decisions
 
-It leads each section with the recommended answer, and skips whatever exploration already settled. Most runs are two confirmations and done.
+The core setup still covers these three decisions. It leads each section with the recommended answer, and skips whatever exploration already settled. Most runs are two confirmations and done.
 
 | Decision | What it proposes | When it actually asks |
 | --- | --- | --- |
@@ -47,6 +48,16 @@ The tracker options:
 The first three ship as templates in the skill and work out of the box. Local markdown is a first-class option, not a fallback: a solo project with no remote is fully supported. One caveat is worth repeating: don't use local markdown if you're using GitHub. They are alternatives, not layers.
 
 "Other" is not a stub either. It is the reason Jira, Linear, Azure DevOps and Beads all work: you describe the workflow, the skill records your prose in `docs/agents/issue-tracker.md`, and the downstream skills follow the prose. The community has already done this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
+
+## Optional commit-message policy
+
+When `commit` is installed, setup offers to help create `docs/agents/commit-messages.md`:
+
+- An existing policy is reused unless you confirm a change.
+- A new policy records only explicit repository or user requirements, and is written only after you confirm the requirements and draft. Jira references, time values, and workflow transitions are never invented.
+- If the default Conventional Commit format is enough, the file stays absent.
+
+`commit` reads the file directly, so setup adds no policy pointer to `AGENTS.md` or `CLAUDE.md`.
 
 ## Common questions
 
@@ -71,7 +82,7 @@ It doesn't. `docs/agents/triage-labels.md` is a *mapping*: it tells `/triage` wh
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
-No. It configures three things: tracker, labels, doc layout. There have been direct requests to make it the home for per-user preferences, and the standing answer is that skills stay opinionated: *"Config is death."* Preferences belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
+Not general preferences. Its core setup covers the tracker, labels, and doc layout; when `commit` is installed, it can also record an optional repository commit-message policy. There have been direct requests to make it the home for per-user preferences, and the standing answer is that skills stay opinionated: *"Config is death."* Preferences such as cadence and tone belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
 
 **Can I keep the config in `~/.claude` instead of committing it to every repo?**
 
@@ -87,6 +98,7 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 - An `## Agent skills` section appears in the instruction file your harness actually reads, with a one-line summary pointing at each of those files.
 - The tracker it proposed matches the remote you really use, and the label strings match labels that really exist in your tracker.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
+- Any new commit-message policy contains only requirements you confirmed; choosing the default leaves an absent `docs/agents/commit-messages.md` uncreated.
 - Nothing in the skill files themselves changed. If setup edited a `SKILL.md`, something went wrong.
 
 ## Where it fits

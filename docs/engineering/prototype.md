@@ -27,7 +27,7 @@ A finished prototype leaves two things, and they go to different places.
 
 The **answer** (the verdict plus the question it settled) is captured durably: a commit message, an ADR, the implementation issue. That is what the main branch keeps, folded into the real code.
 
-The **prototype** is the runnable evidence the answer came from, and it is not deleted. It doesn't belong in main either: there is nothing there to maintain and it rots fast. So it is committed to a throwaway `prototype/<name>` branch out of main, never merged, with a [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) to that branch left on the implementation issue. Main stays clean; the exploration stays findable and re-runnable by whoever picks the work up next.
+The **prototype** is the runnable evidence the answer came from, and it is not deleted. It doesn't belong in main either: there is nothing there to maintain and it rots fast. So the skill uses [commit](https://aihero.dev/skills-commit) to preserve it on a throwaway `prototype/<name>` branch out of main, without pushing or merging it, with a [context pointer](https://www.aihero.dev/ai-coding-dictionary/context-pointer) to that branch left on the implementation issue. Main stays clean; the exploration stays findable and re-runnable by whoever picks the work up next.
 
 ## Common questions
 
