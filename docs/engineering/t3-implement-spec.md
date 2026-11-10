@@ -47,6 +47,24 @@ Existing runs stay in their existing home unless relocation is explicitly agreed
 and verified. Local probes, logs, and worktrees can remain local; putting their
 paths in a remote comment does not make them available on another machine.
 
+## Bind before fan-out
+
+Workers receive one verified governing instruction snapshot and an aggregate
+resource policy before they start. Approved committed instructions are preferred;
+approved uncommitted instructions require a coherent read-only snapshot, checked
+from the actual worker workspace. Mutable main-checkout paths alone are not enough.
+
+The included Cargo guard serializes cooperating builds across worktrees and bounds
+compiler jobs. On a configured Mac, warning pressure throttles rather than halts
+work; critical pressure or sustained rapid swap growth defers new builds while
+lightweight work continues. Machine-local budgets are configurable, not universal
+host assumptions. Quiet telemetry writes routine samples to files and emits events
+only when the resource policy changes or sampling fails.
+
+Follow-up findings return to the orchestrator, which assigns or resumes one
+implementation owner. A reviewer or merger telling a peer about a defect does not
+dispatch a second fix.
+
 ## Common questions
 
 **Does moving the skill into this fork make it tracker-aware?**
@@ -71,6 +89,10 @@ uncertain, new dispatch pauses until the checkpoint is recovered.
 - The checkpoint lives where repository policy says it does, without a silent
   second authoritative copy.
 - Handoff names blockers, owners, retained machine-local artifacts, and worker links.
+- Concurrent workers use a shared build slot and verified instruction identity.
+- Warning pressure reduces compilation without a blanket pause, and unchanged
+  healthy telemetry does not wake the orchestrator.
+- Each follow-up defect has one implementation owner, without parallel duplicate fixes.
 
 ## Where it fits
 

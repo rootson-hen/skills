@@ -9,7 +9,8 @@ them and use its lifecycle vocabulary separately from worker execution state.
 
 - **Run:** stable run ID/marker, Spec/ticket pointers, checkpoint location,
   orchestrator link, last reconciled time, resolved role selections,
-  repositories/T3 projects, integration destinations, fixed review bases/scopes.
+  repositories/T3 projects, integration destinations, fixed review bases/scopes,
+  governing instruction snapshot/manifest, and aggregate resource policy pointers.
 - **Dispatches:** one row per active or recovery-relevant attempt: ticket/role,
   resolved agent, client request ID, thread link/ID, run/task IDs,
   machine/project, actual checkout/worktree, branch/base, execution state.
@@ -21,7 +22,8 @@ them and use its lifecycle vocabulary separately from worker execution state.
   their machine/workspace; a remote pointer does not make them portable. Keep
   credentials in the credential store, not the checkpoint.
 - **Next actions:** current frontier or blocker/gate, next action and owner,
-  and any required intervention. Replace superseded actions in the same section.
+  and any required intervention, including the single implementation owner for
+  follow-up defects. Replace superseded actions in the same section.
 
 A review's identity includes repository, fixed base SHA and scope, reviewed head
 SHA, and any separately reviewed uncommitted/artifact inputs. Record validation

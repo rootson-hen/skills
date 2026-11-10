@@ -31,7 +31,9 @@ requirements and resolution; the ledger owns dispatch bookkeeping.
 
 Resolve role selections using [Resolve agents](references/agents.md).
 Map each ticket to its owning T3 project and a safe
-[workspace](references/workspaces.md).
+[workspace](references/workspaces.md), including its governing instruction snapshot.
+Before fan-out, bind shared build/resource budgets and telemetry ownership using
+[Resource stewardship](references/resources.md); verify each worker can obey them.
 
 For source changes, keep an integration destination **per repository**. Continue
 feature branches/PRs identified by the spec; create integration branches only
@@ -69,8 +71,9 @@ actions/owners, and worker links. Resume by reconciling the same run.
 ## 5. Close
 
 Apply `implement-spec`'s final review and resolution per repository, reusing a
-completed review only while its inputs match. Fixes return to an implementation
-context. Close only when every ticket's completion criterion is evidenced.
+completed review only while its inputs match. Findings return to the orchestrator,
+which assigns or resumes one implementation owner for fixes. Close only when every
+ticket's completion criterion is evidenced.
 
 Retain worker threads for inspection. Clean up only disposable workspaces whose
 work and local-only artifacts are accounted for, under T3/repository permissions.
