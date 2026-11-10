@@ -34,6 +34,21 @@ Create a GitLab issue.
 
 Run `glab issue view <number> --comments`.
 
+## Orchestration persistence
+
+Prefer one editable checkpoint note on the Spec issue per run. Discover it by its
+stable run marker across all note pages; retain its exact note ID/URL. Verify that
+the available `glab`/API operations support discovery, exact-note read, creation,
+and update, with appropriate permissions, capacity, and reader visibility.
+One active orchestrator per Spec writes the checkpoint, updating it in place and
+reading it back; an uncertain creation requires rediscovery before retry.
+
+Resume an existing ledger in its current home. If note persistence is unsuitable
+or unavailable, agree one fallback before dispatch. Relocation requires a verified
+new checkpoint and a superseded pointer from the old record. Keep requirements in
+the Spec, acceptance evidence on tickets, and local execution artifacts separate;
+none is a second authoritative checkpoint. Never publish credentials.
+
 ## Wayfinding operations
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.

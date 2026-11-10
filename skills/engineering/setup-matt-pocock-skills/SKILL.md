@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
+description: "Configure this repo's issue tracker, orchestration persistence, triage labels, and domain docs for the engineering skills."
 disable-model-invocation: true
 ---
 
@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Scaffold the per-repo configuration that the engineering skills assume:
 
-- **Issue tracker**: where issues live (GitHub by default; local markdown is also supported out of the box)
+- **Issue tracker and orchestration persistence**: where issues and mutable run checkpoints live (GitHub by default; local markdown is also supported out of the box)
 - **Triage labels**: the strings used for the five canonical triage roles
 - **Domain docs**: where `GLOSSARY.md` and ADRs live, and the consumer rules for reading them
 - **Commit messages** (optional): repository-specific rules for the `commit` skill
@@ -22,10 +22,10 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 Look at the current repo to understand its starting state. Read whatever exists; don't assume:
 
 - `git remote -v` and `.git/config`: is this a GitHub repo? Which one?
-- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
+- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Follow existing configuration pointers, regardless of their headings or paths, to the tracker and any ledger policy. Preserve custom locations and deliberate local exceptions.
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root
 - `docs/adr/` and any `src/*/docs/adr/` directories
-- `docs/agents/`: does this skill's prior output already exist? Read any existing `commit-messages.md` so its policy is preserved.
+- Existing pointed-to tracker/ledger docs and `docs/agents/`: does this skill's prior output already exist? Read any existing `commit-messages.md` so its policy is preserved.
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Is the `commit` skill installed? This decides whether to offer Section D.
@@ -48,7 +48,9 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 - **Local markdown**: issues live as files under `.scratch/<feature>/` in this repo (good for solo projects or repos without a remote)
 - **Other** (Jira, Linear, etc.): ask the user to describe the workflow in one paragraph; the skill will record it as freeform prose
 
-Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
+Record the choice in the existing pointed-to tracker doc, or `docs/agents/issue-tracker.md` for a new setup. With that choice, draft its orchestration persistence policy using [Checkpoint configuration](checkpoint-configuration.md). Include the recommended default in the draft; ask separately only when a backend limitation or exception needs a decision. This configures future runs, not a migration of active ledgers.
+
+The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
@@ -71,7 +73,7 @@ If the file is absent, ask whether the repo needs a specific commit-message form
 Show the user a draft of:
 
 - The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
-- The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
+- The tracker doc, including its orchestration persistence policy or pointer, plus `docs/agents/domain.md` and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
 - Any proposed `docs/agents/commit-messages.md`, only if the user chose repository-specific rules
 
 Let them edit before writing.
@@ -95,7 +97,7 @@ The block:
 
 ### Issue tracker
 
-[one-line summary of where issues are tracked]. See `docs/agents/issue-tracker.md`.
+[one-line summary of where issues and orchestration checkpoints are stored]. See `[tracker-doc-path]`.
 
 ### Triage labels
 
@@ -116,7 +118,7 @@ Then write the docs files using the seed templates in this skill folder as a sta
 - [triage-labels.md](./triage-labels.md): label mapping (only if `triage` is installed)
 - [domain.md](./domain.md): domain doc consumer rules + layout
 
-For "other" issue trackers, write `docs/agents/issue-tracker.md` from scratch using the user's description.
+For "other" issue trackers, write the tracker doc using the user's description and the checkpoint configuration reference. Reuse existing doc paths and pointers; the templates seed missing content rather than replace custom workflows. Keep provider-specific execution fields in the consuming skill, not in tracker configuration.
 
 Write `docs/agents/commit-messages.md` only after the user confirms its draft. Do not add a commit-policy pointer to `AGENTS.md` or `CLAUDE.md`; the `commit` skill reads the file directly.
 

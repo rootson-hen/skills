@@ -18,6 +18,18 @@ Create a new file under `.scratch/<feature-slug>/` (creating the directory if ne
 
 Read the file at the referenced path. The user will normally pass the path or the issue number directly.
 
+## Orchestration persistence
+
+Use one `orchestration.md` checkpoint beside the Spec in `.scratch/<feature-slug>/`,
+following the repository's ignore convention. One active orchestrator per Spec
+owns it. Keep a stable run marker and checkpoint path; update the current snapshot
+in place and read it back. Verify exclusion before committing nearby work.
+
+Resume an existing ledger in its current home. If this location is unsuitable,
+agree one fallback before dispatch. Relocation requires a verified new checkpoint
+and a superseded pointer from the old record, not two authoritative copies.
+Execution logs and retained artifacts can remain separate from the checkpoint.
+
 ## Wayfinding operations
 
 Used by `/wayfinder`. The **map** is a file with one **child** file per ticket.

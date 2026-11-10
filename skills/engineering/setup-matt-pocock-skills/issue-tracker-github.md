@@ -33,6 +33,21 @@ Create a GitHub issue.
 
 Run `gh issue view <number> --comments`.
 
+## Orchestration persistence
+
+Prefer one editable checkpoint comment on the Spec issue per run. Discover it by
+its stable run marker across all comment pages; retain its exact comment ID/URL.
+Use `gh api` to read/create issue comments and update that exact comment ID. Verify
+permissions, capacity, and reader visibility before publishing execution metadata.
+One active orchestrator per Spec writes the checkpoint, updating it in place and
+reading it back; an uncertain creation requires rediscovery before retry.
+
+Resume an existing ledger in its current home. If comment persistence is unsuitable
+or unavailable, agree one fallback before dispatch. Relocation requires a verified
+new checkpoint and a superseded pointer from the old record. Keep requirements in
+the Spec, acceptance evidence on tickets, and local execution artifacts separate;
+none is a second authoritative checkpoint. Never publish credentials.
+
 ## Wayfinding operations
 
 Used by `/wayfinder`. The **map** is a single issue with **child** issues as tickets.

@@ -1,0 +1,5 @@
+interface:
+  display_name: "T3 Implement Spec"
+  short_description: "Implement a spec with T3 workers and a resumable checkpoint."
+policy:
+  allow_implicit_invocation: false
