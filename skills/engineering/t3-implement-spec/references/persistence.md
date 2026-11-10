@@ -27,9 +27,8 @@ no ledger policy, prefer suitable persistence in the configured tracker:
 Verify the available CLI/API/MCP can discover, read, create, and update the exact
 record, with adequate capacity, writer permissions, and appropriate reader
 visibility. REST support alone does not establish MCP capability or permission.
-Check visibility of execution metadata and pointer targets before publishing;
-respect repository/harness authorization for external writes. Do not publish
-secrets or sensitive local details to a broader audience.
+Check that execution metadata and pointer targets are appropriate for the record's
+readers, especially when the tracker is more widely visible than local execution.
 
 If the backend is unsuitable, unavailable, or cannot preserve recovery-critical
 state, explain the limitation and agree one fallback before dispatch. If an

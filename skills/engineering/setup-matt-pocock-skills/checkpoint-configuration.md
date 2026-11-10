@@ -42,6 +42,3 @@ not imply an available MCP tool.
 - Local execution artifacts may remain local. Identify machine-bound pointers and
   keep enough recovery state in the checkpoint for the intended handoff. Publish
   only metadata appropriate for its audience, never credentials.
-
-Use these as prose instructions, not a new database schema or a requirement to
-install tooling. Show the policy in the setup draft before writing it.

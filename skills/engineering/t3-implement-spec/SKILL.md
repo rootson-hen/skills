@@ -12,8 +12,7 @@ T3 execution adaptations. If the dependency is missing, request its installation
 
 Accept spec/ticket pointers and optional provider, model, and supported settings
 for implementer, reviewer, explorer, or merger in ordinary language. The current
-session remains the orchestrator. One active orchestrator owns each Spec; workers
-return evidence to it.
+session remains the orchestrator, with one active orchestrator per Spec.
 
 ## 1. Reconcile
 
@@ -24,16 +23,14 @@ If no tracker is configured, tell the user to run `/setup-matt-pocock-skills`.
 
 Resolve or resume the authoritative checkpoint using
 [Persistence](references/persistence.md), then reconcile its contents using the
-[Ledger contract](references/ledger.md) before scheduling work. Tickets own
-requirements and resolution; the ledger owns dispatch bookkeeping.
+[Ledger contract](references/ledger.md) before scheduling work.
 
 ## 2. Bind
 
 Resolve role selections using [Resolve agents](references/agents.md).
 Map each ticket to its owning T3 project and a safe
-[workspace](references/workspaces.md), including its governing instruction snapshot.
-Before fan-out, bind shared build/resource budgets and telemetry ownership using
-[Resource stewardship](references/resources.md); verify each worker can obey them.
+[workspace](references/workspaces.md). Before resource-heavy concurrency or shared
+writes, apply [Resource stewardship](references/resources.md).
 
 For source changes, keep an integration destination **per repository**. Continue
 feature branches/PRs identified by the spec; create integration branches only
@@ -52,9 +49,6 @@ Link each worker so the user can enter its thread and answer questions.
 Every role owns its skill's internal process and subagents. Report a blocker if the
 chosen worker cannot execute the required skill.
 
-Repository/harness permissions and the task govern commits and feature-branch
-publication.
-
 ## 4. Reconcile results
 
 A completed T3 run is a **result**, not proof that its ticket is done. Check its
@@ -71,8 +65,8 @@ actions/owners, and worker links. Resume by reconciling the same run.
 ## 5. Close
 
 Apply `implement-spec`'s final review and resolution per repository, reusing a
-completed review only while its inputs match. Findings return to the orchestrator,
-which assigns or resumes one implementation owner for fixes. Close only when every
+completed review only while its inputs match. Handle fixes through the
+[worker lifecycle](references/workers.md#worker-lifecycle). Close only when every
 ticket's completion criterion is evidenced.
 
 Retain worker threads for inspection. Clean up only disposable workspaces whose

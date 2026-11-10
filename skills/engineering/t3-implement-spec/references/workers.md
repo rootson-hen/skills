@@ -4,31 +4,26 @@
 
 Use live tool schemas for API mechanics; the coordination contract is:
 
-1. **Persist intent.** Save and read back ticket/role, resolved agent, project,
-   workspace choice, and a unique client request ID in the authoritative checkpoint
-   before launch. Follow the [ledger contract](ledger.md) if persistence is uncertain.
+1. **Prepare dispatch.** Create its dispatch record using the
+   [ledger update contract](ledger.md#updates-and-compaction).
 2. **Launch.** Use delegation when it supports the required project binding;
-   otherwise create a project-bound peer thread. Record returned thread link/ID,
-   run ID, actual workspace, and delegation task ID if any; save and read back the
-   checkpoint before further dispatch. Brief the worker with
-   ticket/spec, relevant notes/commits, workspace/base, verified instruction snapshot,
-   aggregate resource policy, role constraints, and expected result, primarily
-   through context pointers. Route findings to the orchestrator only; peer
-   information never implicitly dispatches a fix.
+   otherwise create a project-bound peer thread. Capture returned identities and
+   actual workspace in the dispatch record. Brief the worker with
+   ticket/spec, workspace/base, governing context, role constraints, expected result,
+   and any shared-resource limits, primarily through context pointers.
 3. **Observe.** Follow delegated work's returned `next` instructions. For peers,
    use T3's thread wait operation and read the relevant run's complete response;
    peer threads need not send child-task completion notifications. Associate
    feedback with its run: queued follow-ups can outlive the first completed turn.
-   Follow [quiet telemetry](resources.md#quiet-telemetry) for resource monitoring;
-   actionable transitions wake the orchestrator, healthy heartbeats do not.
+   If additional monitoring is needed, use the
+   [monitoring contract](resources.md) rather than routine status messages.
 4. **Handle intervention.** Inspect actual thread/pending-request state; permission
    requests are distinct from text questions. Use the existing worker for ordinary
    clarification and record each new run. Reviews and independent re-checks use
-   fresh contexts, under the harness's dispatch rules. For acceptance defects,
-   mergers/reviewers/workers report evidence to the orchestrator; only it assigns
-   or resumes the implementation owner. Record the owner and supersede any duplicate
-   intent before edits. The orchestrator either owns a repair or dispatches it,
-   never both concurrently. Reconcile any already-started peer repair first.
+   fresh contexts, under the harness's dispatch rules. **Follow-up ownership:** all
+   findings return to the orchestrator, which reconciles existing edits and records
+   one implementation owner before assigning or resuming repairs. Peer messages
+   provide evidence, not repair assignments.
 5. **Capture evidence.** Obtain the worker's actual workspace/branch, work performed,
    commit or retained-artifact pointers, commands with observed results, unmet
    criteria, and human actions. Research returns accessible notes; review returns
