@@ -1,0 +1,5 @@
+interface:
+  display_name: "Release Watch"
+  short_description: "Token-free release checks and durable wakeups"
+policy:
+  allow_implicit_invocation: false
