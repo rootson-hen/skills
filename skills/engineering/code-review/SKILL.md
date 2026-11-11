@@ -8,7 +8,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
 
-Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
+Both axes run as **parallel sub-agents in fresh contexts** so they don't pollute each other's context. Read [discovery and findings](references/findings.md) before dispatch and use it for post-discovery adjudication and repair verification. Prior findings and dispositions stay out of blind reviewer context.
 
 Resolve the issue-tracker workflow through the repository's `AGENTS.md` / `CLAUDE.md` configuration pointers, including custom paths and headings. If no tracker is configured, tell the user to run `/setup-matt-pocock-skills`.
 
@@ -69,6 +69,8 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
+Both briefs identify the exact reviewed source/base/scope, request review-local IDs, and say: "This is blind discovery. Perform this review directly; do not invoke code-review or spawn additional agents." Supply original standards/specification, not earlier findings, disposition ledgers or fix reports. Save both original raw reports before reconciliation.
+
 If the spec is missing, skip the Spec sub-agent and note this in the final report.
 
 ### 5. Aggregate
@@ -76,6 +78,8 @@ If the spec is missing, skip the Spec sub-agent and note this in the final repor
 Present the two reports under `## Standards` and `## Spec` headings, verbatim or lightly cleaned. Do **not** merge or rerank findings, because the two axes are deliberately separate (see _Why two axes_).
 
 End with a one-line summary: total findings per axis, and the worst issue _within each axis_ (if any). Don't pick a single winner across axes: that's the reranking the separation exists to prevent.
+
+After discovery, the orchestrator reconciles stable claims and dispositions using [the findings ledger](references/findings.md). Keep this adjudication separate from the original two-axis reports. Required findings block acceptance; optional judgments do not automatically become repair work.
 
 ## Why two axes
 

@@ -53,11 +53,11 @@ This is the most reported problem with the skill, and it is not fixed. Claude Co
 
 **Its sub-agents keep invoking `/code-review` again and spawn more agents.**
 
-Known open bug, reproduced by several people and in more than one harness. The Standards and Spec prompts do not forbid delegation, so a sub-agent can rediscover the skill and fan out again: one report reached 50-plus agents. The fix people have applied on forks is one line appended to both sub-agent briefs: "Do not invoke `/code-review` or spawn additional agents: perform this review directly." Some prefer to handle it at the harness level so every skill inherits the guard. Neither is in the shipped skill yet. If you run this unattended, watch the agent count.
+Earlier versions could recursively delegate: one report reached 50-plus agents after a sub-agent rediscovered the skill and spawned more reviewers. The fix people have applied on forks is one line appended to both sub-agent briefs: "Do not invoke `/code-review` or spawn additional agents: perform this review directly." Some prefer to handle it at the harness level so every skill inherits the guard. This fork now puts that direct-execution guard in both briefs.
 
 **Should I run it in the same [session](https://www.aihero.dev/ai-coding-dictionary/session) that wrote the code?**
 
-Prefer a fresh one. As one reader put it: "Same context reviewing itself isn't review, it's confirmation bias with a slash command." The reviewing agent in the authoring session holds every assumption that shaped the code, which is exactly the context an independent reviewer would not have. This is also why people ask for [implement](https://aihero.dev/skills-implement) without its built-in review step: it runs the review inside the session that just wrote the diff. Invoking `/code-review` yourself from a clean session is the honest version.
+The skill now requires fresh contexts for both parallel discovery axes and excludes previous findings, dispositions and repair reports from their briefs. As one reader put it: "Same context reviewing itself isn't review, it's confirmation bias with a slash command." The reviewing agent in the authoring session holds every assumption that shaped the code, which is exactly the context an independent reviewer would not have. This is also why people ask for [implement](https://aihero.dev/skills-implement) without its built-in review step: it runs the review inside the session that just wrote the diff. Invoking `/code-review` yourself from a clean session is the honest version.
 
 **After every ticket, or once at the end?**
 
@@ -65,11 +65,11 @@ Both work, and the skill does not decide for you. Per-ticket keeps each diff sma
 
 **Can I trust the findings?**
 
-Not without checking. Sub-agent output is a hypothesis, not evidence: one team reported a dozen breaking changes that prose-based reviews had waved through. The skill aggregates the two reports verbatim or lightly cleaned rather than re-verifying each claim against the files, so a finding can cite the wrong location or overstate an impact. Read the citation on each finding before acting on it. That every finding is required to carry one (a standards rule, a smell plus its hunk, or a spec line) is what makes this checkable at all.
+Not without checking. Sub-agent output is a hypothesis, not evidence: one team reported a dozen breaking changes that prose-based reviews had waved through. The raw reports remain separate and preserved. After discovery, the orchestrator checks concrete claims and records required, optional, accepted, deferred or fixed decisions with reasons and current-source evidence. The small ledger checker verifies shape and references, not whether those judgments are correct. That every finding is required to carry one (a standards rule, a smell plus its hunk, or a spec line) is what makes this checkable at all.
 
 **Why does it find new problems every single time I run it?**
 
-Because fixes create new surface, and because the judgement-call half of the Standards axis is not deterministic between runs. One reader described the loop plainly: "/code-review and /improve-code-architecture always find new stuff every time. I implement fixes, rerun these skills, and again and again." There is no convergence guarantee. Treat a pass as a list of leads, act on the ones with a cited rule behind them, and stop: do not run it in a loop until it comes back clean, because it will not.
+Because fixes create new surface, and because the judgement-call half of the Standards axis is not deterministic between runs. One reader described the loop plainly: "/code-review and /improve-code-architecture always find new stuff every time. I implement fixes, rerun these skills, and again and again." There is no convergence guarantee. Reconcile new observations against stable claims only after blind discovery. A duplicate does not automatically reopen an accepted tradeoff; new concrete evidence can. Verify repairs with targeted impact checks, using another full blind pass only when changed invariants justify it.
 
 **Does it review my uncommitted work?**
 
@@ -81,6 +81,7 @@ No. It diffs `<fixed-point>...HEAD`, three-dot, which is measured from the merge
 - The report arrives as two separate blocks under `## Standards` and `## Spec`, not one merged list.
 - Every Standards finding names either a rule in one of your repo's files or one of the twelve smells, with the hunk quoted; every Spec finding quotes a line of the spec.
 - The closing summary gives a worst issue per axis and declines to pick an overall winner.
+- Original reports survive adjudication, and targeted repair verification is identified as verification, not blind discovery.
 - With no spec available, the Spec block says so instead of listing requirements it inferred from the code.
 
 ## Where it fits

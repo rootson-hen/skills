@@ -18,23 +18,24 @@ Communication to and from subagents should be sparse. Communicate primarily thro
 
 ## Steps
 
-1. Read the spec and tickets to understand the task graph.
+1. Read the spec and tickets to understand the task graph. Before execution, agree each ticket's validation plan using [validation evidence](references/validation-evidence.md), including source/dependency identity, expected suites and named skip policy. Use repository tooling to produce the receipt; worker completion alone is not acceptance.
 
 2. (optional) Use an **exploration subagent** to conduct any exploration required by the tickets - relevant codebase files or external documentation. Ensure the exploration subagent can save files - it should save its markdown notes in a directory outside the repo, accessible by all future subagents. This lets **implementer subagents** focus on implementation rather than exploration.
 
 3. Create the integration branch. If the issue tracker closes work through PRs, or the user asks for one, open a draft PR after the first merge in step 5 (a branch with no commits ahead of main can't open one), marked as closing the spec and tickets.
 
 4. Use **implementer subagents** to implement each ticket, each in its own worktree on its own branch. Each implementer subagent:
-   - confirms its worktree is based on the integration branch before starting, and resets onto it if not;
+   - verifies its actual repository/workspace/base and governing context before starting; preserves existing work and reports a base mismatch rather than resetting it;
    - calls the Skill tool with `tdd` to build the ticket;
-   - merges the integration branch tip into its own branch before reporting done
+   - owns its background commands through their final exit and process cleanup, preserving unfinished state on interruption;
+   - reconciles the integration tip into its branch when needed, then returns an exact-source validation receipt and retained-artifact pointers.
 
-5. Once an **implementer subagent** completes, merge its work to the integration branch with a **merger subagent**.
+5. Once an **implementer subagent** completes, verify its [validation receipt](references/validation-evidence.md) and acceptance coverage before integration. For a clean integration checkout and a verified descendant of its current tip, the parent can run `git merge --ff-only <verified-commit>` and verify the resulting commit/tree itself. Use a **merger subagent** only for substantive reconciliation/conflicts, with revalidation of the reconciled result. Recheck identity at integration; a moving branch name is not the verified commit.
 
 6. If this changes the **frontier** of available tickets, kick off more **implementer subagents** to work on the new tickets. This allows for maximum concurrency.
 
-7. Once all tickets are complete, call the Skill tool with `code-review` on the integration branch. Fix all issues raised by the code review in a single **implementer subagent**.
+7. Once all tickets are complete, call the Skill tool with `code-review` on the pinned integration scope. Preserve blind Standards/Spec discovery, then adjudicate findings using its [findings policy](../code-review/references/findings.md). Assign required repairs to one implementation owner; record optional, accepted and deferred claims with reasons. Verify repairs with targeted changed-surface/impact checks and fresh applicable validation evidence. Run full blind discovery again only when changed invariants justify it, not as a cosmetic clean-report loop.
 
 8. If a draft PR exists, mark it ready for review. Otherwise, resolve each ticket the way the issue tracker closes work, and report the integration branch.
 
-9. Clean up all **implementer subagent** worktrees.
+9. Clean up disposable **implementer subagent** worktrees only after acceptance, owned execution completion, integration and required local artifacts are accounted for. Retain blocked/unfinished evidence and report its owner.

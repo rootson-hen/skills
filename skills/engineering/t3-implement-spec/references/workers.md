@@ -27,16 +27,24 @@ Use live tool schemas for API mechanics; the coordination contract is:
 5. **Capture evidence.** Obtain the worker's actual workspace/branch, work performed,
    commit or retained-artifact pointers, commands with observed results, unmet
    criteria, and human actions. Research returns accessible notes; review returns
-   `code-review`'s output. Record failures, interruptions, and question-blocked runs
-   as unfinished. A wait timeout alone is not failure. Before retry/replacement,
-   reconcile partial changes and stop superseded execution through its T3 owner.
+   `code-review`'s separate original reports. Source workers return the universal
+   [validation receipt](../../implement-spec/references/validation-evidence.md),
+   including exact inputs and final owned-command exits. A settled worker with
+   Maven or other background execution still active is unfinished. Record failures,
+   interruptions, and question-blocked runs as unfinished. A wait timeout alone is
+   not failure. Before retry/replacement, reconcile partial changes and stop
+   superseded execution through its T3 owner. A repair verifier may see the claim
+   and fix, explicitly as verification; fresh blind discovery receives neither
+   previous reports nor dispositions, per [findings policy](../../code-review/references/findings.md).
 
 ## Integration and local-only work
 
-For isolated source branches, verify repository/base and integrate through
-`implement-spec`'s merger role. With a reused checkout, work may already be at the
-integration destination: verify the exact diff/commit and tests instead of
-manufacturing a merge.
+For isolated source branches, apply `implement-spec`'s receipt acceptance and
+integration rule: the parent can verify a clean checkout, exact descendant commit,
+`--ff-only` result and tree itself. Dispatch a merger only for substantive
+reconciliation/conflicts, then validate the reconciled result. With a reused
+checkout, work may already be at the integration destination: verify the exact
+diff/commit and tests instead of manufacturing a merge.
 
 Preserve ticket-required local-only validation state and hand its exact workspace
 and artifacts to dependents. Verify uncommitted changes and their validation

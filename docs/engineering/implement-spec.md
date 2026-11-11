@@ -2,7 +2,7 @@
 
 `implement-spec` takes a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) and its [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) and lands the whole thing in one run. The orchestrating [agent](https://www.aihero.dev/ai-coding-dictionary/agent) hands each ticket to an implementer [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent) working in its own git worktree, merges each finished branch into a single **integration branch**, runs [code-review](https://aihero.dev/skills-code-review) over the result, and resolves the tickets.
 
-It reads the tickets as a **task graph**, not a list. Blocking edges decide what can start, so at any moment there is a **frontier** of tickets whose blockers have all landed, and every ticket on the frontier runs at once. That is the difference from working the tickets one by one: the graph's shape, not its order on the tracker, sets the pace.
+It reads the tickets as a **task graph**, not a list. Blocking edges decide what can start, so at any moment there is a **frontier** of tickets whose blockers have all landed, and ready tickets run concurrently when their workspace and shared resources permit. That is the difference from working the tickets one by one: the graph's shape, not its order on the tracker, sets the pace.
 
 ## When to reach for it
 
@@ -27,7 +27,9 @@ Everything lands on one branch. Each implementer:
 
 1. confirms its worktree is based on the integration branch before it starts,
 2. builds its ticket with [tdd](https://aihero.dev/skills-tdd), red-green one slice at a time,
-3. merges the integration branch tip into its own branch before reporting done, so landing it is a fast-forward.
+3. reconciles the integration tip when needed and returns exact-source validation evidence before acceptance.
+
+The parent can verify and perform a clean descendant fast-forward itself. A merger worker is reserved for substantive reconciliation or conflicts, followed by validation of the reconciled result.
 
 Whether a pull request exists at all is the tracker's call. If your tracker closes work through PRs, or you ask for one, a draft PR opens after the first merge and is marked ready at the end. Otherwise the run stops on the integration branch with every ticket resolved the way your tracker closes work, which works fully offline against a local markdown tracker.
 
@@ -45,7 +47,7 @@ No, not any more. One user who liked the in-progress version had exactly this co
 
 **Its review and fix loop ran for hours, or kept "fixing" tickets that hadn't been built yet.**
 
-Both come from `code-review` running outside the one slot the skill gives it. It compares the code against the whole spec, so it only makes sense once every ticket has landed; run it mid-run and every unbuilt ticket reads as a failure, the agent sets about building it, and that triggers another review. At the end, the skill runs `code-review` once and sends every finding to one fix subagent, but it doesn't yet say when to stop after that fix. One user reported a five-ticket feature where "the review and fix loop took roughly four hours". If you see a second broad review start, tell it to run focused checks for the fixed findings and stop. Expect that first review to find real problems: the run's output is a draft that the review finishes, not something to ship on its own.
+Both come from `code-review` running outside the one slot the skill gives it. It compares the code against the whole spec, so it only makes sense once every ticket has landed; run it mid-run and every unbuilt ticket reads as a failure, the agent sets about building it, and that triggers another review. One user reported a five-ticket feature where "the review and fix loop took roughly four hours". The workflow now separates blind discovery from adjudication: required corrections get one repair owner, optional judgments and accepted tradeoffs get explicit reasons, and repair verification targets the changed surface and impact. A new full blind pass needs changed invariants, not cosmetic churn. Expect that first review to find real problems: the run's output is a draft that the review finishes, not something to ship on its own.
 
 **Does it drive tdd like implement does?**
 
@@ -65,14 +67,19 @@ No. People ask because the skills now reach into implementation: "is Sandcastle 
 
 **A ticket's key test was skipped inside its worktree, and it reported green.**
 
-A worktree holds only what git tracks. Tests that read gitignored fixtures, local databases, or credentials can skip themselves there silently. For a ticket whose verification depends on untracked material, tell the orchestrator to run it in the main checkout instead.
+A worktree holds only what git tracks. Tests that read gitignored fixtures, local databases, or credentials can skip themselves there silently. Provision the needed context and fixtures in the chosen workspace and bind them into the validation identity. An exact-source receipt must show the expected suite actually executed with nonzero counts; only individually named, justified skips can be allowed.
+
+**Does a completed worker mean the ticket is accepted?**
+
+No. The parent checks the approved plan, current source and prepared dependencies, fresh reports, command exits, expected test counts and owned-process completion. Retry recovery remains labelled recovered, never first-attempt green. The checker catches consistency errors; it cannot prove that a producer was honest or that the evidence covers the right behavior.
 
 ## It's working if
 
 - Several implementers are running at once whenever the graph allows, not one after another.
 - A ticket starts as soon as its last blocker lands on the integration branch, not when the whole run ends.
 - Every ticket's trace shows `tdd` running, with a failing test before the code.
-- Merges into the integration branch are fast-forwards, not conflict resolutions.
+- Clean descendant integrations need no merger worker; substantive reconciliation gets explicit ownership and revalidation.
+- Stale reports, unexpected skips, retries and unfinished background commands cannot silently count as green.
 - The run ends on one branch with every ticket resolved, and a PR only if your tracker wanted one.
 
 ## Where it fits

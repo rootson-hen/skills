@@ -51,8 +51,9 @@ chosen worker cannot execute the required skill.
 
 ## 4. Reconcile results
 
-A completed T3 run is a **result**, not proof that its ticket is done. Check its
-evidence against acceptance criteria, perform the applicable
+A completed T3 run is a **result**, not proof that its ticket is done. Validate its
+receipt using [validation evidence](../implement-spec/references/validation-evidence.md),
+check criterion coverage and owned background-process completion, then perform the applicable
 [integration or local-only handoff](references/workers.md#integration-and-local-only-work),
 and persist the outcome before recomputing the frontier.
 

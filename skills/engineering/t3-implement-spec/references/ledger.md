@@ -26,7 +26,9 @@ them and use its lifecycle vocabulary separately from worker execution state.
 
 A review's identity includes repository, fixed base SHA and scope, reviewed head
 SHA, and any separately reviewed uncommitted/artifact inputs. Record validation
-commands and observed outcomes by pointer. Reuse evidence only while its relevant
+commands, validation receipts, the separate code-review findings ledger, and observed
+outcomes by pointer, not copied reports. Blind discovery contexts receive requirements,
+not these findings/dispositions. Reuse evidence only while its relevant
 inputs match; a branch name alone is not an input identity.
 
 ## Updates and compaction

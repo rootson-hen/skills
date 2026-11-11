@@ -2,7 +2,7 @@
 
 `t3-implement-spec` adapts [implement-spec](https://aihero.dev/skills-implement-spec)'s
 task graph to T3 project-bound workers. One active orchestrator owns each Spec;
-a worker's completed run is evidence to reconcile, not ticket acceptance.
+a worker's completed run is evidence to reconcile, not ticket acceptance. Exact-source validation receipts and finished owned background commands are checked before integration.
 
 Its ledger is a **resume checkpoint**, not a transcript. It keeps current
 dispatches, evidence, retained resources, and next actions in the location selected
@@ -48,7 +48,7 @@ universal single-build policy or a pause on independent lightweight work.
 
 Ordinary worktrees use their committed instruction tree. Context unavailable at
 the agreed version needs provisioning and verification in the worker's workspace. Follow-up
-findings go through the orchestrator so each repair has one implementation owner.
+findings go through the orchestrator so each repair has one implementation owner. Blind discovery contexts receive requirements, not earlier dispositions; the checkpoint points to the separate findings ledger instead of copying it. Clean descendant fast-forwards can be verified by the parent, reserving merger workers for substantive reconciliation.
 Monitoring is used when needed; routine telemetry does not merit an interruption.
 
 ## Common questions
