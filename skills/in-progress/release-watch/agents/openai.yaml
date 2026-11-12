@@ -1,5 +1,3 @@
 interface:
   display_name: "Release Watch"
-  short_description: "Token-free release checks and durable wakeups"
-policy:
-  allow_implicit_invocation: false
+  short_description: "Bounded T3 job watches with token-free checks and cleanup"

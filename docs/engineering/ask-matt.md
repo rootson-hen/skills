@@ -18,7 +18,7 @@ You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
 
 ## Prerequisites
 
-The router names skills; it does not install them. Everything it points at has to be installed for the recommendation to be actionable. Its map also names the separately installed `/release-watch` beta for token-free external checks and durable creator-owned wakeups; that utility does not set release policy or mutate branches.
+The router names skills; it does not install them. Everything it points at has to be installed for the recommendation to be actionable. Its map also names the separately installed, model-invoked `/release-watch` beta for finite T3/macOS job checks, creator-owned wakeups and bounded LaunchAgent cleanup. It defaults to six hours and leaves fixes, approvals and branch changes to the calling workflow; native T3 PR watching is preferred when its events suffice.
 
 The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has already configured an issue tracker in the repo. The router will happily recommend them before that has happened. Setup can also create the optional `docs/agents/commit-messages.md` policy read by [commit](https://aihero.dev/skills-commit).
 

@@ -2,7 +2,7 @@
 
 Beta. These skills are public on purpose: try them and tell me what breaks. They're excluded from the plugin and the top-level README until they graduate to a stable bucket, they get no docs pages, and they can change or disappear without warning.
 
-- **[release-watch](./release-watch/SKILL.md)**: Observe exact release runs with token-free calendar checks and a durable acknowledged event outbox. User-invoked.
+- **[release-watch](./release-watch/SKILL.md)**: Watch finite jobs/CI/analysis in T3 on macOS with token-free calendar checks, a six-hour default lifetime, creator wakeups and owned LaunchAgent cleanup. Model-invoked.
 
 The plugin won't give you these. Install one directly:
 
