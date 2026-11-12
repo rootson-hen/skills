@@ -31,7 +31,11 @@ preserving identity/outbox; old indefinite watches therefore become bounded.
 
 Each wake checks once before expiry, including after an overnight sleep. A terminal
 job result wins over expiry. If still pending or faulted at/after expiry, record
-`expired`, attempt notification, close and remove the owned LaunchAgent. This does
+`expired`, attempt notification to the recorded creator before cleanup, then
+close and remove the owned LaunchAgent. Activated watches make this final attempt
+even if the wrapper omitted routine delivery flags. The callback prompt must
+route expiry to the agent for contextual inspection/re-watch/user-input and
+old-resource cleanup, not treat it as silent completion. This does
 not cancel or kill the external job. Terminal acknowledgment also closes early.
 No agent processing is required for local LaunchAgent expiry cleanup.
 

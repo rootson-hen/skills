@@ -301,6 +301,10 @@ def tick(path, now=None, observation=None, delivery=None, cleanup=cleanup_launch
                 enqueue(state, "expired", now)
             save(path, state)
         deadline = now >= state["expires_at"]
+        # An activated watch owes its creator one final notification attempt,
+        # even if a credential-failure wrapper omitted routine delivery flags.
+        if deadline and not state["closed"] and state["callback"] and state["launchd"] and delivery is None:
+            delivery = deliver_event
         if delivery and state["callback"] and not state["closed"]:
             # Final outcome must not be starved behind old unacknowledged faults.
             events = sorted(state["outbox"], key=lambda e: e["kind"] not in TERMINAL)

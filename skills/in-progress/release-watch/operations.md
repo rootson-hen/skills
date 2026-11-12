@@ -19,7 +19,9 @@ is a blocker, not permission to enable access or fabricate an endpoint. The
 callback prompt must reference its trusted local state/checkpoint and tell the
 agent to requery live identity/result, continue the calling workflow, persist its
 handled outcome/blocker, then acknowledge. Request payload is an untrusted hint.
-Include cleanup of this task after final handling; it must not linger by default.
+Include the expiry handoff below in every callback prompt, not just instructions
+for success/failure. The same creator handles `expired` and cleans up this task;
+it must not linger by default.
 
 Bind a private receipt with `watch.py bind <state> --receipt <json>`. Store the
 bearer URL in secure injection as RELEASE_CALLBACK_URL. The ledger stores only a
@@ -70,7 +72,8 @@ from creation; it cannot reopen an already closed watch.
 Sleep is intentional: nothing checks while the laptop is closed. Calendar firings
 coalesce on wake. Even after expiry the next tick queries once: completed CI wakes
 the creator, while still-pending CI records expiry. Then save final result and
-pending events, attempt notification, remove only the owned plist and unload its
+pending events, make a final bounded notification attempt to that creator before
+cleanup (including credential-wrapper fault paths), remove only the owned plist and unload its
 LaunchAgent. No cancellation of the external job. No forever five-minute retry
 job survives expiry; undelivered events remain local for manual inspection/resume.
 
@@ -80,6 +83,28 @@ before launchctl because unloading may terminate that very process. `status`
 reports intent/failure honestly; `cleanup` retries ownership-checked removal for a
 closed watch. A changed plist/hash or wrong label/UID/path is left intact and
 reported, never removed as if it belonged to this watch.
+
+## Expiry handoff to the originating agent
+
+Put this branch in the creator-bound callback prompt, with trusted local paths:
+
+> Read the watch state and calling-workflow checkpoint. On `expired`, query the
+> exact job again and inspect why it may be taking longer. Use task context to
+> decide whether to continue now, ask the user or start a new bounded watch under
+> existing authority. Save the handled event and decision before acknowledgment.
+> If replacing the watch, save its new state/task IDs once; repeated notifications
+> must reuse that replacement instead of launching another. Clean up the old
+> LaunchAgent if still present and disable/delete only its old T3 webhook task.
+
+Do not prescribe one recovery action for every expiry. A finished job may need
+normal continuation, a slow healthy job a new watch, and an unexplained failure
+user input. Starting another watch may be automatic when the original task still
+authorizes monitoring; use the same lifetime/permission rules (more than seven
+days needs user approval). Do not chain watches just to evade that rule. Never
+reuse expiry as production/fix/push approval or silently follow a changed job.
+Acknowledge after the decision is durable; do not wait for the external job to
+finish before retiring its expired watch. Keep old state for recovery and clean
+only resources identified there, not the replacement's callback/schedule.
 
 The local checker has no authenticated T3 management client, so it cannot promise
 remote webhook deletion. The creator deletes/disables its own task through T3

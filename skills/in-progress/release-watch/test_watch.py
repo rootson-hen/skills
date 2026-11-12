@@ -145,6 +145,57 @@ class WatchTests(unittest.TestCase):
         self.assertTrue(state["closed"])
         self.assertEqual(state["outbox"][0]["delivery"], "delivery-failed")
 
+    def test_expiry_notice_reaches_bound_callback_before_cleanup(self):
+        url = "https://example.invalid/creator-callback"
+        w.bind_callback(self.path, {"projectId": "project", "boundThreadId": "creator", "scheduledTaskId": "task", "webhookUrl": url})
+        order = []
+        class Response:
+            status = 202
+            def __enter__(self):
+                return self
+            def __exit__(self, *args):
+                return False
+        class Opener:
+            def open(inner, request, timeout):
+                body = json.loads(request.data)
+                self.assertEqual(request.full_url, url)
+                self.assertEqual(body["kind"], "expired")
+                self.assertEqual(body["identity"], self.identity)
+                self.assertEqual(body["creator"], self.creator)
+                saved = w.load(self.path)
+                self.assertFalse(saved["closed"])
+                self.assertEqual(saved["outbox"][0]["event_id"], body["event_id"])
+                order.append("creator-notified")
+                return Response()
+        def cleanup(path, state):
+            order.append("cleanup")
+            state["cleanup"] = "removed"
+            w.save(path, state)
+        with patch.dict(w.os.environ, {"RELEASE_CALLBACK_URL": url}), patch.object(w.urllib.request, "build_opener", return_value=Opener()):
+            state = w.tick(self.path, now=7 * 3600, observation={"status": "pending"}, delivery=w.deliver_event, cleanup=cleanup)
+        self.assertEqual(order, ["creator-notified", "cleanup"])
+        self.assertEqual(state["outbox"][0]["delivery"], "accepted-unacknowledged")
+        self.assertTrue(state["closed"])
+
+    def test_active_watch_attempts_expiry_delivery_without_routine_deliver_flag(self):
+        w.bind_callback(self.path, {"projectId": "project", "boundThreadId": "creator", "scheduledTaskId": "task", "webhookUrl": "https://example.invalid/token"})
+        state = w.load(self.path)
+        state["launchd"] = {"status": "loaded"}
+        w.save(self.path, state)
+        order = []
+        def notify(state, event):
+            order.append("notify:" + event["kind"])
+            return "callback-unavailable"
+        def cleanup(path, state):
+            order.append("cleanup")
+            state["cleanup"] = "removed"
+            w.save(path, state)
+        with patch.object(w, "deliver_event", side_effect=notify):
+            result = w.tick(self.path, now=7 * 3600, observation={"status": "fault", "fault": "auth"}, cleanup=cleanup)
+        self.assertEqual(order[0], "notify:expired")
+        self.assertEqual(order[-1], "cleanup")
+        self.assertEqual(result["status"], "expired")
+
     def test_legacy_state_adopts_only_exact_owned_plist_for_cleanup(self):
         state = w.load(self.path)
         state["schema_version"] = 1

@@ -22,8 +22,9 @@ the calling workflow owns all fixes, merges, approvals and production actions.
    based on expected duration. **More than seven days requires actual user
    permission** recorded for that duration. On wake, check once before applying
    expiry, even if the laptop slept beyond the lifetime. This never cancels the
-   remote job. At expiry the owned LaunchAgent is removed, including when delivery
-   failed; undelivered events stay on disk for manual resume.
+   remote job. At expiry, save the `expired` event and make a final attempt to
+   notify the originating thread **before** removing the owned LaunchAgent.
+   Failed delivery remains saved locally; it does not keep a polling job alive.
 3. **Initialize.** Use a persistent private state path outside temporary storage:
    `python3 -I <skill>/watch.py init <state> --identity <json> --creator <json>
    --lifetime-seconds <seconds> --checker <absolute-program> <literal-argv>`.
@@ -48,8 +49,14 @@ the calling workflow owns all fixes, merges, approvals and production actions.
    setup. No enabling remote access on the user's behalf.
 6. **Handle and finish.** On notification, revalidate identity/live result and use
    the calling workflow's action ledger so repeated notifications cannot repeat
-   effects. Save handled result/blocker before `watch.py ack <state> --event-id
-   <id> --creator <creator-json>`. Terminal acknowledgment removes the owned
+   effects. **On `expired`, return control to the originating agent:** inspect
+   the job and its duration, then use task context to continue, ask the user or
+   create a new bounded watch under existing authority. Expiry is not job failure
+   and does not itself require a new human gate. Persist the decision/replacement
+   state path so duplicate notices cannot create duplicate watches. Follow
+   [expiry handoff](operations.md#expiry-handoff-to-the-originating-agent) for
+   old-watch cleanup. Save handled result/blocker before `watch.py ack <state>
+   --event-id <id> --creator <creator-json>`. Terminal acknowledgment removes the owned
    LaunchAgent early; expiry removes it regardless of acknowledgment. The creator
    disables/deletes its T3 webhook task after final handling. A closed watch never
    resumes polling automatically; starting a new bounded watch is explicit.
