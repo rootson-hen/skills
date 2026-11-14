@@ -6,7 +6,7 @@ It proposes rather than implements. Categories guide investigation, not the numb
 
 ## When to reach for it
 
-You invoke this by typing `/retro`, and the agent won't reach for it on its own. Use it after a session with costly mistakes, slow discovery, or repeated user corrections. It reads the current session by default, or the history you specify, and stays in place rather than routing to another workspace.
+You invoke this by typing `/retro`, and the agent won't reach for it on its own. Use it after a session with costly mistakes, slow discovery, or repeated user corrections. It reads the current session by default, or the history you specify.
 
 - For a verdict on the code produced, use [code-review](https://aihero.dev/skills-code-review).
 - For structural improvements discovered from code rather than session history, use [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture).

@@ -8,9 +8,9 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 - **Standards**: does the code conform to this repo's documented coding standards?
 - **Spec**: does the code faithfully implement the originating issue / spec?
 
-Both axes run as **parallel sub-agents in fresh contexts** so they don't pollute each other's context. Read [discovery and findings](references/findings.md) before dispatch and use it for post-discovery adjudication and repair verification. Prior findings and dispositions stay out of blind reviewer context.
+Both axes run as **parallel sub-agents** so they don't pollute each other's context. Start every sub-agent with a fresh context window. Read [discovery and findings](references/findings.md) before dispatch and use it for post-discovery adjudication and repair verification. Prior findings and dispositions stay out of blind reviewer context.
 
-Resolve the issue-tracker workflow through the repository's `AGENTS.md` / `CLAUDE.md` configuration pointers, including custom paths and headings. If no tracker is configured, tell the user to run `/setup-matt-pocock-skills`.
+Resolve the issue-tracker workflow through the repository's `AGENTS.md` / `CLAUDE.md` configuration pointers, including custom paths and headings. If a spec must be fetched from the tracker and no tracker is configured, tell the user to run `/setup-matt-pocock-skills`; a spec supplied as a path or file needs no tracker.
 
 ## Process
 
@@ -29,11 +29,11 @@ Look for the originating spec, in this order:
 1. Issue references in the commit messages (`#123`, `Closes #45`, GitLab `!67`, etc.), fetched via the configured issue-tracker workflow.
 2. A path the user passed as an argument.
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
-4. If nothing is found, ask the user where the spec is. If they say there isn't one, the **Spec** sub-agent will skip and report "no spec available".
+4. If nothing is found, ask the user where the spec is. If they say there isn't one, skip the **Spec** sub-agent and note "no spec available" under `## Spec` in the final report.
 
 ### 3. Identify the standards sources
 
-Anything in the repo that documents how code should be written, such as `CODING_STANDARDS.md` or `CONTRIBUTING.md`.
+Search the repo for every file that documents how code should be written. When `CODING_STANDARDS.md` or `CONTRIBUTING.md` exists, it must be on the list.
 
 On top of whatever the repo documents, the Standards axis always carries the **smell baseline** below: a fixed set of Fowler code smells (_Refactoring_, ch.3) that applies even when a repo documents nothing. Two rules bind it:
 
@@ -57,6 +57,8 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 
 ### 4. Spawn both sub-agents in parallel
 
+Issue both sub-agent calls together, in the foreground, and aggregate the reports they return.
+
 **Standards sub-agent prompt** should include:
 
 - The full diff command and commit list.
@@ -69,9 +71,9 @@ Each smell reads *what it is* → *how to fix*; match it against the diff:
 - The path or fetched contents of the spec.
 - The brief: "Report: (a) requirements the spec asked for that are missing or partial; (b) behaviour in the diff that wasn't asked for (scope creep); (c) requirements that look implemented but where the implementation looks wrong. Quote the spec line for each finding. Under 400 words."
 
-Both briefs identify the exact reviewed source/base/scope, request review-local IDs, and say: "This is blind discovery. Perform this review directly; do not invoke code-review or spawn additional agents." Supply original standards/specification, not earlier findings, disposition ledgers or fix reports. Save both original raw reports before reconciliation.
+Both briefs identify the exact reviewed source/base/scope, request review-local IDs, and say: "This is blind discovery. Perform this review directly; do not invoke code-review or spawn additional agents." Supply original standards/specification and the repository instructions the reviewer needs, not earlier findings, disposition ledgers or fix reports. Save both original raw reports before reconciliation.
 
-If the spec is missing, skip the Spec sub-agent and note this in the final report.
+If the spec is missing, skip the Spec sub-agent and note "no spec available" under `## Spec` in the final report.
 
 ### 5. Aggregate
 
