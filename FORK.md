@@ -93,3 +93,55 @@ Differences from a newer upstream release alone are not customizations. In
 particular, the installed `resolving-merge-conflicts` folder matches its recorded
 historical tree but is absent at v1.3.1. It is not copied into this release-based
 fork as a personal customization.
+
+## Refinement decisions
+
+One entry per merge cluster, with the reasoning and the session evidence it
+rested on, so the next upstream collision can re-decide with context rather
+than from zero.
+
+**2026-11-14, upstream `5863806` (unreleased tip, explicit exception):**
+
+- `implement-spec` step 4 (implementer startup): took upstream verbatim (fresh
+  subagent per ticket, reset onto integration branch). No incident anywhere
+  supports the fork's preserve-and-report line (T3 threads, Claude transcripts
+  and the Bob store were searched; the only reset episode, Bob 2026-10-23,
+  fired correctly on an empty worktree), and the commit that added it
+  (`362a307`) records no rationale. The protection survives in
+  `t3-implement-spec`'s references, where real usage runs. Step 7 (final
+  review): kept the fork's adjudicated review, folding in upstream's "single
+  fresh implementer subagent" as repair owner; upstream's own docs still
+  describe the four-hour fix-loop as unresolved. Evidence: t3-implement-spec
+  runs jira-cli HEN-5/23/80 and ekmf specs, 2026-11-10 to 13.
+- `implement`: kept the fork's pinned-base review paragraph (upstream's
+  one-liner walks into the empty-diff problem their own shared FAQ documents),
+  adopting upstream's "call the Skill tool with" verb form. Evidence:
+  code-review's 34 invocations, including the ekmf DB2-alpha reviews at a
+  pinned merge-base, 2026-11-10 to 12.
+- `code-review`: kept the fork throughout (findings ledger, blind discovery,
+  tracker resolution via `AGENTS.md`/`CLAUDE.md` configuration pointers; a
+  2026-11-10 T3 finding showed the fixed tracker-config path assumption
+  failing) and added upstream's explicit fresh-context-window sentence.
+- `grilling`: kept the fork verbatim. The hard stop is this fork's founding
+  refinement; upstream's doc ending ("before it acts on what you agreed")
+  would contradict the auto-merged `SKILL.md`.
+- `retro`: kept the fork verbatim. The doc was written 2026-11-13 (`0387bc8`)
+  for the decision-ready skill that auto-merged unchanged; upstream's doc
+  describes their simpler skill.
+- `ask-matt`, `prototype`: kept the fork. The conflicted additions document
+  fork-only skills (`commit`, `t3-implement-spec`) that survive the merge.
+- `setup-matt-pocock-skills`: blended. Kept pointer-following and
+  preserve-exceptions semantics; took upstream's existing-section check and
+  the legacy `CONTEXT.md` migration.
+- Post-merge coherence pass: nine fresh reviewers, one per skill changed on
+  both sides (the eight above plus `tdd`, whose supporting files the fork had
+  converted to Java while upstream changed its `SKILL.md`). Twelve fixes
+  applied, all small: stale bug claims and counts in `ask-matt` and `tdd`
+  docs, the tdd Java example, the setup label-creation contradiction (docs
+  said labels are never created; the merged skill creates them), setup's
+  undocumented `CONTEXT.md` migration and hardcoded template paths, a
+  private-workspace clause removed from `retro` docs, and wording alignments
+  in `code-review` and `implement-spec`. Known and left alone: fork docs link
+  fork-only skills to `aihero.dev/skills-<name>` URLs that upstream does not
+  publish; that is a pre-existing fork-wide convention, not a merge
+  regression.
