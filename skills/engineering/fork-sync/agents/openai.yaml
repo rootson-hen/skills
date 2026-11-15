@@ -1,0 +1,5 @@
+interface:
+  display_name: "Fork Sync"
+  short_description: "Adopt an upstream release into this fork, one human decision per skill."
+policy:
+  allow_implicit_invocation: false

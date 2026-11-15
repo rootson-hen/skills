@@ -18,6 +18,7 @@ Reachable only when you type them (Claude Code: `disable-model-invocation: true`
 - **[t3-implement-spec](./t3-implement-spec/SKILL.md)**: Run that workflow through T3 project-bound workers, with one configuration-aware resume checkpoint per run.
 - **[wayfinder](./wayfinder/SKILL.md)**: Plan a huge chunk of work (more than one agent session can hold) as a shared map of decision tickets on the issue tracker, resolved one at a time until the way to the destination is clear.
 - **[retro](./retro/SKILL.md)**: Suggest improvements to the coding agent's environment (navigation, automated checks, coding standards, steering files, tooling) after a session, most severe first.
+- **[fork-sync](./fork-sync/SKILL.md)**: Bring this fork up to date with upstream, deciding every skill change with you before it lands.
 
 ## Model-invoked
 

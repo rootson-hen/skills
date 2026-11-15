@@ -32,7 +32,7 @@ The skill's leading word is **flow**, a path *through* the skills rather than a 
 - **Standalones**, which sit off every flow and which you use on their own: the prototype, the questionnaire, the research run.
 - **A vocabulary layer underneath**, the two references the other skills pull in when the words rather than the process are the problem.
 
-The complementary utilities also include [commit](https://aihero.dev/skills-commit): implement uses it after review, and you can use `/commit` on its own when finished work needs a local commit without pushing.
+The complementary utilities also include [commit](https://aihero.dev/skills-commit): implement uses it after review, and you can use `/commit` on its own when finished work needs a local commit without pushing. [fork-sync](https://aihero.dev/skills-fork-sync) is the same kind of utility pointed at this repo instead of your project: it decides which personal skill changes survive an upstream import.
 
 ## The phase boundary
 
@@ -56,7 +56,7 @@ People keep asking for one in the README. This skill is that list. A static tabl
 
 **It told me half the skills aren't installed.**
 
-This is a known bug, and it is not fixed. Most of the skills the router routes you through set `disable-model-invocation: true`, which means the harness leaves them out of the skill list it injects into the agent's context. The agent reads that list as exhaustive and reports them missing. In one reported session, it declared the whole spec-and-tickets flow absent and rerouted to bare `/grilling` and `/tdd`. Twenty of the plugin's twenty-nine skills carry the flag, so this is the common case rather than an edge. They are installed. Type the slash command anyway, or check `.claude-plugin/plugin.json`, which is the authority on what is present.
+This is a known bug, and it is not fixed. Most of the skills the router routes you through set `disable-model-invocation: true`, which means the harness leaves them out of the skill list it injects into the agent's context. The agent reads that list as exhaustive and reports them missing. In one reported session, it declared the whole spec-and-tickets flow absent and rerouted to bare `/grilling` and `/tdd`. Eighteen of the plugin's thirty skills carry the flag, so this is the common case rather than an edge. They are installed. Type the slash command anyway, or check `.claude-plugin/plugin.json`, which is the authority on what is present.
 
 **It described a skill's behaviour, and the skill doesn't do that.**
 
