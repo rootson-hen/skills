@@ -1,0 +1,5 @@
+interface:
+  display_name: "T3 Implement"
+  short_description: "One persistent T3 implementer, tracer bullets, final blind review."
+policy:
+  allow_implicit_invocation: false
