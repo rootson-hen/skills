@@ -75,6 +75,13 @@ No. The thread persists, but its history can compact. Progress, partial source,
 validation and owned-process state are preserved for recovery. A replacement is a
 recovery decision, not the normal next-ticket step.
 
+**Does a persistent worker mean keeping its checkout forever?**
+
+No. Persistence covers implementation and repairs. The parent finishes with verified
+removal or a concrete retention dependency, owner and release trigger, asking for
+cleanup approval when needed. An open PR alone does not require its duplicate
+worker checkout. Worker threads and required evidence remain available.
+
 **Is one implementer proven cheaper or better?**
 
 Not yet. Sequential work avoids per-ticket startup and merge coordination but gives

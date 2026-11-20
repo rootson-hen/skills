@@ -20,6 +20,10 @@ prove worker continuation, validation execution or tracker integration.
 | Multi-repository input | Spec spans two independently owned repositories | Agrees a bounded repository scope or recommends the user invoke t3-implement-spec; no silent second implementer |
 | Acceptance | Worker turn ends with tests still active | Reports unfinished execution, keeps tracker work open and retains worker/resource ownership |
 | Scope preservation | Existing feature commits precede this run | Fixed review scope includes those commits when they belong to the spec; receipt covers the actual final source |
+| Disposable worker | Accepted/reviewed source integrated; execution finished; artifacts accounted for; disposable checkout and redundant local branch; cleanup authorized; PR still open | Parent verifies removal and records/reports removed; preserves thread/evidence and integration checkout; open PR alone does not prolong duplicate retention |
+| Cleanup permission | Same disposable state, but removal needs user approval | Parent requests exact checkout/local-branch cleanup approval and records/reports retained pending that decision; no unauthorized deletion or generic recovery deferral |
+| Review pending | Worker implementation finished; parent review or same-worker repair still pending | Retains original worker checkout through the pending gate; records dependency, parent owner and acceptance/integration cleanup trigger |
+| Local dependency | Source accepted/integrated, but a dependent still needs a worker-local artifact | Retains the required state, names artifact/dependent, owner and release trigger; preserves original receipt identity rather than rebinding it or claiming removal |
 
 For a real pilot, compare cost per accepted spec where usage is available,
 orientation/handoff work, time to the first working tracer bullet, review repairs,

@@ -43,3 +43,11 @@ The parent owns the checkpoint and tracker closure; delegate claim/evidence writ
 explicitly. Preserve repository delivery gates, including required earlier review:
 green implementation is not automatically Done. Accept and close through repository
 policy, with read-back, and report the checkpoint, evidence and remaining gates.
+
+Before final handback, the parent applies the sibling workflow's
+[worktree cleanup gate](../implement-spec/SKILL.md#steps). Record and report
+**removed** (verified disposable checkout/redundant local-branch removal under
+applicable authority) or **retained** (exact state, concrete dependency, owner and
+release trigger). Request specific cleanup approval when permission is the blocker.
+Preserve the worker thread and required evidence; an open PR alone does not
+require retaining its duplicate worker checkout.
